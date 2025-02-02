@@ -8,6 +8,7 @@ import PopularAirlines from "../components/home/PopularAirlines";
 import NearestAirports from "../components/home/NearestAirports";
 import FAQs from "../components/home/FAQs";
 import SearchMoreFlights from "../components/home/SearchMoreFlights";
+import styled from "styled-components";
 
 export const Home = () => {
   const { origin, currency } = useSelector((state) => state.flightSearch);
@@ -58,17 +59,21 @@ export const Home = () => {
   ];
 
   return (
-    <div>
+    <HomeWrapper>
       <Explorer />
       {origin && origin !== "" && <Breadcrumb origin={origin} />}
       {origin && origin !== "" && <CheapFlightsList flights={flights} />}
       {userLocation && <MapComponent userLocation={userLocation} />}
       {origin && origin !== "" && <PopularAirlines origin={origin} />}
-      {userLocation && origin && origin !== "" && (
+      {/* {userLocation && origin && origin !== "" && (
         <NearestAirports origin={origin} userLocation={userLocation} />
-      )}
+      )} */}
       {origin && origin !== "" && <FAQs origin={origin} />}
       {origin && origin !== "" && <SearchMoreFlights origin={origin} />}
-    </div>
+    </HomeWrapper>
   );
 };
+
+const HomeWrapper = styled.div`
+  overflow: hidden;
+`;

@@ -1,8 +1,9 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { formatMoney } from "../../../utils";
 import InfoIcon from "@mui/icons-material/Info";
+import { setTopFlightsActiveButton } from "../../../redux/flightSearchSlice";
 
 const Container = styled.div`
   display: flex;
@@ -28,7 +29,7 @@ const Container = styled.div`
     white-space: nowrap;
     font-size: 0.8rem;
     font-weight: 600;
-    @media (min-width: 460px) {
+    @media (min-width: 600px) {
       font-size: 1rem;
       font-weight: bolder;
       margin-bottom: -4px;
@@ -78,57 +79,60 @@ const Button = styled.button`
   &:hover {
     background-color: #e7f1ff; // Hover effect
   }
-  @media (min-width: 460px) {
+  @media (min-width: 550px) {
     height: 56px;
     flex-direction: row;
     gap: 10px;
   }
 `;
 
-const ButtonsContainer = () => {
-  const [activeButton, setActiveButton] = React.useState("best");
-
-  // Access cheapestPrice and currency from Redux store
-  const { cheapestPrice, currency } = useSelector(
-    (state) => state.flightSearch
+const ButtonsContainer = ({ cheapestPrice }) => {
+  const topFlightsActiveButton = useSelector(
+    (state) => state.flightSearch.topFlightsActiveButton
   );
 
+  const dispatch = useDispatch();
+
+  // Access cheapestPrice and currency from Redux store
+  const { currency } = useSelector((state) => state.flightSearch);
+
   const handleButtonClick = (type) => {
-    setActiveButton(type);
+    dispatch(setTopFlightsActiveButton(type));
   };
 
   return (
     <div>
       <Container>
         <Button
-          active={activeButton === "best"}
+          active={topFlightsActiveButton === "best"}
           onClick={() => handleButtonClick("best")}
         >
           Best
           <InfoIcon
             sx={{
               fontSize: 16,
-              color: "#e7f1ff",
+              color: topFlightsActiveButton === "best" ? "#e7f1ff" : "#fff",
               backgroundColor: "#5f6368",
               borderRadius: "50%",
             }}
           />
         </Button>
         <Button
-          active={activeButton === "cheapest"}
+          active={topFlightsActiveButton === "cheapest"}
           onClick={() => handleButtonClick("cheapest")}
           className="cheapest-price-button"
         >
           <h5>Cheapest</h5>
           <span>
             <span>from</span>
-            {currency} {formatMoney(cheapestPrice)}
+            {currency} {cheapestPrice}
           </span>
           <div>
             <InfoIcon
               sx={{
                 fontSize: 16,
-                color: "#fff",
+                color:
+                  topFlightsActiveButton === "cheapest" ? "#e7f1ff" : "#fff",
                 backgroundColor: "#5f6368",
                 borderRadius: "50%",
               }}

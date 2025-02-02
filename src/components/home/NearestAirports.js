@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchNearestAirports } from "../../services/APIs"; // Import the API function
 import FlightIcon from "@mui/icons-material/Flight";

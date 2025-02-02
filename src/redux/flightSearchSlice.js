@@ -9,16 +9,14 @@ const initialState = {
   },
   origin: "",
   destination: "",
-  currency: "IRR",
-  cheapestPrice: 2988000,
+  currency: "USD",
+  airportSearchQuery: "",
   searchDetail: {
     // originSkyId: "LOND",
     // destinationSkyId: "NYCA",
     // originEntityId: "27544008",
     // destinationEntityId: "27537542",
     // date: "2025-02-04",
-    // cabinClass: "economy",
-    // adults: 1,
     // sortBy: "best",
     originSkyId: "",
     destinationSkyId: "",
@@ -26,10 +24,9 @@ const initialState = {
     destinationEntityId: "",
     depDate: formatDate(new Date()),
     turnDate: formatDate(new Date()),
-    cabinClass: "economy",
-    adults: 1,
     sortBy: "best",
   },
+  topFlightsActiveButton: "best",
 };
 
 export const flightSearchSlice = createSlice({
@@ -37,6 +34,7 @@ export const flightSearchSlice = createSlice({
   initialState,
   reducers: {
     setTripType: (state, action) => {
+      console.log("setTripType: ", action.payload);
       state.filterBar.tripType = action.payload;
     },
     setPassengers: (state, action) => {
@@ -54,19 +52,20 @@ export const flightSearchSlice = createSlice({
     setCurrency: (state, action) => {
       state.currency = action.payload;
     },
-    setCheapestPrice: (state, action) => {
-      state.cheapestPrice = action.payload;
-    },
     setOriginSkyId: (state, action) => {
+      console.log("setOriginSkyId: ", action.payload);
       state.searchDetail.originSkyId = action.payload;
     },
     setDestinationSkyId: (state, action) => {
+      console.log("setDestinationSkyId: ", action.payload);
       state.searchDetail.destinationSkyId = action.payload;
     },
     setOriginEntityId: (state, action) => {
+      console.log("setDestinationSkyId: ", action.payload);
       state.searchDetail.originEntityId = action.payload;
     },
     setDestinationEntityId: (state, action) => {
+      console.log("setDestinationEntityId: ", action.payload);
       state.searchDetail.destinationEntityId = action.payload;
     },
     setDepDate: (state, action) => {
@@ -75,11 +74,14 @@ export const flightSearchSlice = createSlice({
     setTurnDate: (state, action) => {
       state.searchDetail.turnDate = action.payload;
     },
-    setAdults: (state, action) => {
-      state.searchDetail.adults = action.payload;
-    },
     setSortBy: (state, action) => {
       state.searchDetail.sortBy = action.payload;
+    },
+    setAirportSearchQuery: (state, action) => {
+      state.airportSearchQuery = action.payload;
+    },
+    setTopFlightsActiveButton: (state, action) => {
+      state.topFlightsActiveButton = action.payload;
     },
   },
 });
@@ -91,13 +93,13 @@ export const {
   setOrigin,
   setDestination,
   setCurrency,
-  setCheapestPrice,
   setOriginSkyId,
   setDestinationSkyId,
   setOriginEntityId,
   setDestinationEntityId,
   setDate,
-  setAdults,
   setSortBy,
+  setAirportSearchQuery,
+  setTopFlightsActiveButton,
 } = flightSearchSlice.actions;
 export default flightSearchSlice.reducer;

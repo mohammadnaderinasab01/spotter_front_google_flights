@@ -6,11 +6,19 @@ import {
   setOrigin,
   setDestination,
   setCurrency,
+  setAirportSearchQuery,
+  setDestinationSkyId,
+  setDestinationEntityId,
+  setOriginSkyId,
+  setOriginEntityId,
 } from "../../redux/flightSearchSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import { AirportsSearchBox } from "./AirportsSearchBox";
+import { searchAirports } from "../../services/APIs";
+import { Link, useSearchParams } from "react-router";
 
 const SearchInputsWrapper = styled.div`
   display: flex;
@@ -34,6 +42,35 @@ const SearchInputsWrapper = styled.div`
     gap: 8px;
     width: 100%;
   }
+  & > a {
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    transform: translate(-50%, 50%);
+    background-color: var(--color-royal-blue);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: auto;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & > a:hover {
+    background-color: #1557b0;
+  }
+  & > a.disabled {
+    border: 1px solid #999;
+    background-color: #ccc;
+    color: #666666;
+  }
 `;
 
 const LocationInputsWrapper = styled.div`
@@ -41,6 +78,20 @@ const LocationInputsWrapper = styled.div`
   display: flex;
   gap: 8px;
   width: 100%;
+`;
+
+const TextFieldWrapper = styled.div`
+  width: 100%;
+  position: relative;
+
+  & > span {
+    font-size: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    z-index: 1;
+    position: absolute;
+  }
 `;
 
 const StyledTextField = styled(TextField)`
@@ -145,6 +196,12 @@ const DateInputsWrapper = styled.div`
       pointer-events: none;
     }
   }
+  .date-input:nth-child(1) .react-datepicker-popper {
+    left: 50px !important;
+  }
+  .date-input:nth-child(2) .react-datepicker-popper {
+    left: -50px !important;
+  }
 
   .react-datepicker {
     font-family: inherit;
@@ -166,38 +223,39 @@ const DateInputsWrapper = styled.div`
   }
 `;
 
-const ExploreButton = styled.button`
-  position: absolute;
-  left: 50%;
-  bottom: -10px;
-  transform: translate(-50%, 50%);
-  background-color: var(--color-royal-blue);
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: auto;
-  min-width: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background-color: #1557b0;
-  }
-`;
-
 export const FlightSearchInputs = ({ page }) => {
+  const [locationsInputSelected, setLocationsInputSelected] = useState("");
   const dispatch = useDispatch();
-  const { tripType } = useSelector((state) => state.flightSearch.filterBar);
+  const [params] = useSearchParams();
+  const { airportSearchQuery, currency } = useSelector(
+    (state) => state.flightSearch
+  );
+  const { tripType, cabinClass } = useSelector(
+    (state) => state.flightSearch.filterBar
+  );
+  const {
+    originSkyId,
+    destinationSkyId,
+    originEntityId,
+    destinationEntityId,
+    depDate,
+    turnDate,
+  } = useSelector((state) => state.flightSearch.searchDetail);
+
   const { origin, destination } = useSelector((state) => state.flightSearch);
+  // console.log("origin: ", origin);
   const [departureDate, setDepartureDate] = useState(new Date());
   const [returnDate, setReturnDate] = useState(new Date());
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [originResults, setOriginResults] = useState([]);
+  const [destinationResults, setDestinationResults] = useState([]);
+
+  const initialAirportsSearch = async () => {
+    if (origin !== "") {
+      const results = await searchAirports(origin);
+      setOriginResults(results.data);
+    }
+  };
 
   const handleSwap = () => {
     const tempOrigin = origin;
@@ -216,7 +274,7 @@ export const FlightSearchInputs = ({ page }) => {
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
             );
             const data = await response.json();
-
+            console.log("mored: ", data);
             // Get the city name from OpenStreetMap response
             const cityName =
               data.address.city ||
@@ -227,6 +285,7 @@ export const FlightSearchInputs = ({ page }) => {
             if (cityName !== undefined) {
               dispatch(setOrigin(cityName));
             }
+            getLocationByIP();
           } catch (error) {
             console.error("Error getting location:", error);
             // Fallback to IP-based location
@@ -268,38 +327,111 @@ export const FlightSearchInputs = ({ page }) => {
   };
 
   useEffect(() => {
-    getUserLocation();
+    if (params.get("originSkyId") === null) {
+      getUserLocation();
+    }
   }, []);
+
+  useEffect(() => {
+    initialAirportsSearch();
+  }, [origin]);
+
+  const handleOriginChange = async (e) => {
+    const value = e.target.value;
+    dispatch(setOrigin(value));
+    dispatch(setAirportSearchQuery(value));
+
+    dispatch(setOriginSkyId(""));
+    dispatch(setOriginEntityId(""));
+    if (value) {
+      const results = await searchAirports(value);
+      setOriginResults(results.data);
+    } else {
+      setOriginResults([]);
+    }
+  };
+
+  const handleDestinationChange = async (e) => {
+    const value = e.target.value;
+    dispatch(setDestination(value));
+    dispatch(setAirportSearchQuery(value));
+
+    dispatch(setDestinationSkyId(""));
+    dispatch(setDestinationEntityId(""));
+    if (value) {
+      const results = await searchAirports(value);
+      setDestinationResults(results.data);
+    } else {
+      setDestinationResults([]);
+    }
+  };
 
   return (
     <SearchInputsWrapper page={page} elevation={0}>
       <LocationInputsWrapper>
-        <StyledTextField
-          variant="standard"
-          placeholder={
-            isLoadingLocation ? "Getting location..." : "Where from?"
-          }
-          fullWidth
-          value={origin}
-          onChange={(e) => dispatch(setOrigin(e.target.value))}
-        />
+        <TextFieldWrapper>
+          <StyledTextField
+            variant="standard"
+            placeholder={
+              isLoadingLocation ? "Getting location..." : "Where from?"
+            }
+            fullWidth
+            value={origin}
+            onChange={handleOriginChange}
+            onFocus={() => setLocationsInputSelected("origin")}
+            onBlur={() => {
+              setTimeout(() => {
+                if (locationsInputSelected === "origin") {
+                  setLocationsInputSelected("");
+                }
+              }, 10);
+            }}
+          />
+          {locationsInputSelected === "origin" && originResults.length > 0 && (
+            <AirportsSearchBox type="origin" results={originResults} />
+          )}
+          {originSkyId !== "" && <span>{originSkyId}</span>}
+        </TextFieldWrapper>
         <StyledSwapButton size="small" onClick={handleSwap}>
           <SwapHorizIcon />
         </StyledSwapButton>
-        <StyledTextField
-          variant="standard"
-          placeholder="Where to?"
-          fullWidth
-          value={destination}
-          onChange={(e) => dispatch(setDestination(e.target.value))}
-        />
+        <TextFieldWrapper>
+          <StyledTextField
+            variant="standard"
+            placeholder="Where to?"
+            fullWidth
+            value={destination}
+            onChange={handleDestinationChange}
+            onFocus={() => setLocationsInputSelected("destination")}
+            onBlur={() => {
+              setTimeout(() => {
+                if (locationsInputSelected === "destination") {
+                  setLocationsInputSelected("");
+                }
+              }, 10);
+            }}
+          />
+          {locationsInputSelected === "destination" &&
+            destinationResults.length > 0 && (
+              <AirportsSearchBox
+                type="destination"
+                results={destinationResults}
+              />
+            )}
+          {destinationSkyId !== "" && <span>{destinationSkyId}</span>}
+        </TextFieldWrapper>
       </LocationInputsWrapper>
       <div className="date-inputs">
         <DateInputsWrapper>
           <div className="date-input">
             <DatePicker
               selected={departureDate}
-              onChange={(date) => setDepartureDate(date)}
+              onChange={(date) => {
+                setDepartureDate(date);
+                if (date > returnDate) {
+                  setReturnDate(date);
+                }
+              }}
               dateFormat="EEE d MMM"
               placeholderText="Departure"
               minDate={new Date()}
@@ -320,7 +452,18 @@ export const FlightSearchInputs = ({ page }) => {
         </DateInputsWrapper>
       </div>
       {page === "home" && (
-        <ExploreButton>
+        <Link
+          className={
+            (!origin ||
+              origin === "" ||
+              !destination ||
+              destination === "" ||
+              !departureDate ||
+              departureDate === "") &&
+            "disabled"
+          }
+          to={`/search?originSkyId=${originSkyId}&destinationSkyId=${destinationSkyId}&originEntityId=${originEntityId}&destinationEntityId=${destinationEntityId}&date=${depDate}&returnDate=${turnDate}&cabinClass=${cabinClass}&currency=${currency}`}
+        >
           <SearchIcon
             sx={{
               fontSize: 24,
@@ -330,7 +473,7 @@ export const FlightSearchInputs = ({ page }) => {
             }}
           />
           Explore
-        </ExploreButton>
+        </Link>
       )}
     </SearchInputsWrapper>
   );

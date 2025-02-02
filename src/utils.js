@@ -14,3 +14,18 @@ export const formatDate = (date) => {
 
   return `${year}-${month}-${day}`;
 };
+
+export const getHoursAndMinutesFromDate = (dateString) => {
+  const date = new Date(dateString);
+  const hours = String(date.getHours()).padStart(2, "0"); // Get hours and pad with leading zero
+  const minutes = String(date.getMinutes()).padStart(2, "0"); // Get minutes and pad with leading zero
+  return `${hours}:${minutes}`;
+};
+
+export const convertMinutesNumberToString = (minutes) => {
+  if (minutes < 60) {
+    return `${minutes} minutes`;
+  } else {
+    return `${Math.floor(minutes / 60)} hrs ${minutes % 60} min`;
+  }
+};

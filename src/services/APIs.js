@@ -59,7 +59,8 @@ export const fetchFlights = async (
   cabinClass,
   adults,
   sortBy,
-  currency
+  currency,
+  limit
 ) => {
   const options = {
     method: "GET",
@@ -76,6 +77,7 @@ export const fetchFlights = async (
       currency,
       market: "en-US",
       countryCode: "US",
+      limit: limit,
     },
     headers: {
       "X-RapidAPI-Host": "sky-scrapper.p.rapidapi.com",
