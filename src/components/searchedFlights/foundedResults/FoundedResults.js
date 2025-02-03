@@ -23,9 +23,9 @@ const FoundedResultsWrapper = styled.div`
     width: calc(100% - 32px);
     height: 40px;
     margin-bottom: 16px;
-    background-color: #fff;
+    background-color: var(--color-white);
     outline: none;
-    border: 1px solid #dadce0;
+    border: 1px solid var(--color-snow-tiger);
     border-radius: 8px;
     align-self: center;
   }
@@ -95,7 +95,6 @@ const FoundedResults = () => {
         params.get("currency"),
         limit
       );
-      console.log("res: ", data.data);
       if (topFlightsActiveButton === "best") {
         setTopFlights(data.data);
       } else if (topFlightsActiveButton === "cheapest") {
@@ -134,6 +133,14 @@ const FoundedResults = () => {
   useEffect(() => {
     fetchData("cheapest", 3);
     fetchData("other", 10);
+    console.log(
+      "moreFlights?.itineraries?.length: ",
+      moreFlights?.itineraries?.length
+    );
+    console.log(
+      "otherFlights?.itineraries?.length: ",
+      otherFlights?.itineraries?.length
+    );
   }, []);
 
   return (
@@ -181,6 +188,10 @@ const FoundedResults = () => {
       )}
       {!otherFlightsLoading &&
         !otherFlightsError &&
+        !(
+          moreFlights?.itineraries?.length === undefined &&
+          otherFlights?.itineraries?.length === undefined
+        ) &&
         !(
           moreFlights?.itineraries?.length === 0 &&
           otherFlights?.itineraries?.length === 0

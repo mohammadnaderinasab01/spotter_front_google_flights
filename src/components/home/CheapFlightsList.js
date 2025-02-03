@@ -17,7 +17,7 @@ const FlightItemWrapper = styled.div`
   width: 100%;
   display: flex;
   margin: 8px 0;
-  background-color: #fff;
+  background-color: var(--color-white);
   overflow: hidden;
   padding: 4px 16px;
   @media (min-width: 800px) {
@@ -64,13 +64,13 @@ const FlightTitle = styled.h3`
 const FlightPrice = styled.p`
   margin: 0;
   font-size: 16px;
-  color: #5f6368;
+  color: var(--color-shuttle-gray);
 `;
 
 const FlightDetails = styled.p`
   margin: 4px 0 0;
   font-size: 14px;
-  color: #9e9e9e;
+  color: var(--color-mortar-grey);
 `;
 
 const CheapFlightsList = ({ flights }) => {

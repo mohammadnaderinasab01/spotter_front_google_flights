@@ -33,7 +33,7 @@ const BreadcrumbWrapper = styled.div`
     color: var(--color-shuttle-gray);
 
     p {
-      color: #000;
+      color: var(--color-black);
     }
 
     .separator {

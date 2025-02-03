@@ -17,7 +17,7 @@ const AirlineItem = styled.li`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-cerebral-grey);
   padding: 10px;
   border-radius: 5px;
 `;
@@ -31,7 +31,7 @@ const AirlineLogo = styled.img`
 const AirlineInfo = styled.div`
   strong {
     display: block;
-    color: #000;
+    color: var(--color-black);
   }
   font-size: 14px;
   color: gray;

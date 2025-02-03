@@ -49,7 +49,7 @@ const Container = styled.div`
   }
   & > .cheapest-price-button > div > p {
     display: flex;
-    color: #fff;
+    color: var(--color-white);
     font-size: 0.7rem;
     font-weight: bolder;
     padding: 6px;
@@ -68,13 +68,19 @@ const Button = styled.button`
   justify-content: center;
   padding: 10px 20px;
   border: ${(props) =>
-    props.active ? "1px solid #007bff" : "1px solid #dadce0"};
-  border-bottom: ${(props) => props.active && "4px solid #007bff"};
+    props.active
+      ? "1px solid var(--color-azure)"
+      : "1px solid var(--color-snow-tiger)"};
+  border-bottom: ${(props) => props.active && "4px solid var(--color-azure)"};
   font-size: 1rem;
   background-color: ${(props) =>
-    props.active ? "#e7f1ff" : "#fff"}; // Active button background
+    props.active
+      ? "#e7f1ff"
+      : "var(--color-white)"}; // Active button background
   color: ${(props) =>
-    props.active ? "#007bff" : "#000"}; // Active button text color
+    props.active
+      ? "var(--color-azure)"
+      : "var(--color-black)"}; // Active button text color
   cursor: pointer;
   &:hover {
     background-color: #e7f1ff; // Hover effect

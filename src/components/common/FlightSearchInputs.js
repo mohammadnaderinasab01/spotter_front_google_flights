@@ -28,7 +28,7 @@ const SearchInputsWrapper = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 16px;
-  background-color: #fff;
+  background-color: var(--color-white);
   border-radius: 8px;
   margin: ${(props) => (props.page === "home" ? "0 0 16px" : "0")};
   @media (min-width: 800px) {
@@ -53,7 +53,7 @@ const SearchInputsWrapper = styled.div`
     bottom: -10px;
     transform: translate(-50%, 50%);
     background-color: var(--color-royal-blue);
-    color: #fff;
+    color: var(--color-white);
     border: none;
     border-radius: 24px;
     padding: 12px 24px;
@@ -72,12 +72,12 @@ const SearchInputsWrapper = styled.div`
   }
 
   & > a:hover {
-    background-color: #1557b0;
+    background-color: var(--color-aarhusian-sky);
   }
   & > a.disabled {
-    border: 1px solid #999;
-    background-color: #ccc;
-    color: #666666;
+    border: 1px solid var(--color-million-grey);
+    background-color: var(--color-cerebral-grey);
+    color: var(--color-squant);
   }
 `;
 
@@ -105,13 +105,13 @@ const TextFieldWrapper = styled.div`
 const StyledTextField = styled(TextField)`
   & .MuiInputBase-root {
     background: white;
-    border: 1px solid #dadce0;
+    border: 1px solid var(--color-snow-tiger);
     border-radius: 4px;
     padding: 8px 12px;
     height: 36px;
 
     &:hover {
-      border-color: #bdc1c6;
+      border-color: var(--color-metallic);
     }
 
     &.Mui-focused {
@@ -140,7 +140,7 @@ const StyledSwapButton = styled(IconButton)`
     transform: translate(-50%, -50%);
     margin: 0;
     padding: 4px;
-    border: 1px solid #dadce0;
+    border: 1px solid var(--color-snow-tiger);
     border-radius: 50%;
     background-color: white;
     width: 28px;
@@ -148,13 +148,13 @@ const StyledSwapButton = styled(IconButton)`
     z-index: 1;
 
     &:hover {
-      background-color: #f8f9fa;
-      border-color: #bdc1c6;
+      background-color: var(--color-doctor);
+      border-color: var(--color-metallic);
     }
 
     & .MuiSvgIcon-root {
       font-size: 16px;
-      color: #5f6368;
+      color: var(--color-shuttle-gray);
     }
   }
 `;
@@ -176,7 +176,7 @@ const DateInputsWrapper = styled.div`
       width: 100%;
       height: 36px;
       padding: 8px 12px;
-      border: 1px solid #dadce0;
+      border: 1px solid var(--color-snow-tiger);
       border-radius: 4px;
       font-size: 14px;
       color: var(--color-shark);
@@ -186,7 +186,7 @@ const DateInputsWrapper = styled.div`
       cursor: pointer;
 
       &:hover {
-        border-color: #bdc1c6;
+        border-color: var(--color-metallic);
       }
 
       &:focus {
@@ -213,7 +213,7 @@ const DateInputsWrapper = styled.div`
 
   .react-datepicker {
     font-family: inherit;
-    border-color: #dadce0;
+    border-color: var(--color-snow-tiger);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
@@ -402,7 +402,7 @@ export const FlightSearchInputs = ({ page }) => {
                 if (locationsInputSelected === "origin") {
                   setLocationsInputSelected("");
                 }
-              }, 10);
+              }, 300);
             }}
             disabled={page === "search"}
           />
@@ -429,7 +429,7 @@ export const FlightSearchInputs = ({ page }) => {
                 if (locationsInputSelected === "destination") {
                   setLocationsInputSelected("");
                 }
-              }, 10);
+              }, 300);
             }}
             disabled={page === "search"}
           />

@@ -13,7 +13,7 @@ import {
 const AirportsSearchBoxWrapper = styled.div`
   position: absolute;
   z-index: 100;
-  background-color: #fff;
+  background-color: var(--color-white);
   box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3),
     0 4px 8px 3px rgba(60, 64, 67, 0.15);
   border-radius: 4px;
@@ -34,7 +34,7 @@ const ResultItem = styled.div`
   gap: 8px;
 
   &:hover {
-    background-color: #f0f0f0; // Hover effect
+    background-color: var(--color-snowflake); // Hover effect
   }
 
   .airport-name {
@@ -44,12 +44,12 @@ const ResultItem = styled.div`
 
   .airport-code {
     font-size: 14px;
-    color: #666;
+    color: var(--color-squant);
   }
 
   .distance {
     font-size: 12px;
-    color: #999;
+    color: var(--color-million-grey);
   }
 `;
 
@@ -76,13 +76,14 @@ export const AirportsSearchBox = ({ type, results }) => {
       {results.map((airport) => (
         <ResultItem
           key={airport.skyId}
-          onClick={() =>
+          onClick={() => {
+            console.log("handleSetDestinationAirportInfo was clicked");
             handleSetDestinationAirportInfo(
               airport?.skyId,
               airport?.entityId,
               airport?.navigation?.relevantHotelParams?.localizedName
-            )
-          }
+            );
+          }}
         >
           <FlightIcon />
           <div className="airport-name">{airport.name}</div>

@@ -18,8 +18,8 @@ const MapContainer = styled.div`
 `;
 
 const ExploreLink = styled.a`
-  background-color: #fff; // Button color
-  color: #007bff;
+  background-color: var(--color-white); // Button color
+  color: var(--color-azure);
   border: none;
   width: fit-content;
   display: flex;
@@ -38,7 +38,7 @@ const ExploreLink = styled.a`
   transform: translate(-50%, 0); // Adjust position to truly center the button
 
   &:hover {
-    background-color: #0056b3; // Darker shade on hover
+    background-color: var(--color-london-rain); // Darker shade on hover
   }
 `;
 

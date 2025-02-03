@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 const FlightsListContainer = styled.div`
   border-radius: 5px;
   padding: 0 16px 16px;
-  background-color: #fff;
+  background-color: var(--color-white);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -38,7 +38,7 @@ const FlightItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #dadce0;
+  border-bottom: 1px solid var(--color-snow-tiger);
 
   &:last-child {
     border-bottom: none;
@@ -50,7 +50,7 @@ const FlightItem = styled.div`
   }
   & .item-accordion {
     box-shadow: none;
-    border-bottom: 1px solid #dadce0;
+    border-bottom: 1px solid var(--color-snow-tiger);
     margin: 0;
   }
   & .item-accordion:last-child {
@@ -121,7 +121,7 @@ const FlightsListHeader = styled.div`
 `;
 
 const List = styled.div`
-  border: 1px solid #dadce0;
+  border: 1px solid var(--color-snow-tiger);
   padding: 10px;
   border-radius: 8px;
 `;

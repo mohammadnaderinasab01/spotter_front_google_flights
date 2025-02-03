@@ -6,13 +6,15 @@ import styled from "styled-components";
 const StyledInput = styled.input`
   padding: 10px;
   font-size: 16px;
-  border: 1px solid ${(props) => (props.error ? "red" : "#ccc")};
+  border: 1px solid
+    ${(props) => (props.error ? "red" : "var(--color-cerebral-grey)")};
   border-radius: 5px;
   width: 100%;
   box-sizing: border-box;
   outline: none;
   &:focus {
-    border-color: ${(props) => (props.error ? "red" : "#4A90E2")};
+    border-color: ${(props) =>
+      props.error ? "red" : "var(--color-olympic-blue)"};
   }
 `;
 
@@ -25,7 +27,7 @@ const Label = styled.label`
   display: block;
   margin-bottom: 5px;
   font-size: 14px;
-  color: ${(props) => (props.error ? "red" : "#333")};
+  color: ${(props) => (props.error ? "red" : "var(--color-carbon)")};
 `;
 
 const ErrorMessage = styled.span`

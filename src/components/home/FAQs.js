@@ -20,7 +20,7 @@ const Container = styled.div`
   }
   & .item-accordion {
     box-shadow: none;
-    border-bottom: 1px solid #dadce0;
+    border-bottom: 1px solid var(--color-snow-tiger);
     margin: 0;
   }
   & .item-accordion:last-child {
