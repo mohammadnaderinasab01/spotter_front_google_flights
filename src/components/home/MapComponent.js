@@ -7,9 +7,14 @@ import { useSelector } from "react-redux";
 
 const MapContainer = styled.div`
   width: 100%;
+  max-width: 320px;
   min-height: 200px; // Adjust height as needed
   border-radius: 8px; // Optional: Add border radius for aesthetics
   margin: 16px 0; // Add margin for spacing
+  margin: 0 auto;
+  @media (min-width: 800px) {
+    min-height: 240px;
+  }
 `;
 
 const ExploreLink = styled.a`
@@ -47,6 +52,11 @@ const MapComponentWrapper = styled.div`
     letter-spacing: 0px;
     line-height: 24px;
     color: var(--color-shark);
+    margin-bottom: 16px;
+  }
+  @media (min-width: 800px) {
+    max-width: 720px;
+    margin: 0 auto;
   }
 `;
 

@@ -10,6 +10,11 @@ import styled from "styled-components";
 
 const Container = styled.div`
   padding: 16px;
+  width: 100%;
+  @media (min-width: 800px) {
+    max-width: 720px;
+    margin: 0 auto;
+  }
   & > h3 {
     font-size: 1.2rem;
   }

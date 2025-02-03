@@ -9,6 +9,11 @@ const ExplorerWrapper = styled.div`
       0 2px 6px -6px rgba(60, 64, 67, 0.15);
     padding: 0 0 12px;
     margin: 16px 0;
+    @media (min-width: 800px) {
+      max-width: 720px;
+      margin: 16px auto;
+      box-shadow: none;
+    }
   }
   & > .explore-bar {
     width: 100%;

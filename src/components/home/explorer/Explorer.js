@@ -9,6 +9,10 @@ const ExplorerWrapper = styled.div`
       0 2px 6px -6px rgba(60, 64, 67, 0.15);
     padding: 0 0 12px;
     margin: 0 0 16px;
+    width: 100%;
+    @media (min-width: 800px) {
+      box-shadow: unset;
+    }
   }
   & > .header-img-wrapper {
     margin: 0 auto 40px;
@@ -39,6 +43,20 @@ const ExplorerWrapper = styled.div`
     font-size: 2.25rem;
     color: var(--color-shark);
     font-weight: 400;
+    margin-top: -20px;
+    @media (min-width: 800px) {
+      font-size: 2.75rem;
+    }
+  }
+  & > .explore-bar > div {
+    width: 100%;
+    @media (min-width: 800px) {
+      box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3),
+        0 4px 8px 3px rgba(60, 64, 67, 0.15);
+      border-radius: 8px;
+      margin: 0 auto;
+      max-width: 720px;
+    }
   }
 `;
 
@@ -48,8 +66,10 @@ export const Explorer = () => {
       <div className="header-img-wrapper"></div>
       <div className="explore-bar">
         <h3>Flights</h3>
-        <FilterBar />
-        <FlightSearchInputs page={"home"} />
+        <div>
+          <FilterBar />
+          <FlightSearchInputs page={"home"} />
+        </div>
       </div>
     </ExplorerWrapper>
   );

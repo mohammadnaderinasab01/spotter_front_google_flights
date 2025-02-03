@@ -11,6 +11,8 @@ import {
   setDestinationEntityId,
   setOriginSkyId,
   setOriginEntityId,
+  setDepartureDate,
+  setReturnDate,
 } from "../../redux/flightSearchSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,6 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { AirportsSearchBox } from "./AirportsSearchBox";
 import { searchAirports } from "../../services/APIs";
 import { Link, useSearchParams } from "react-router";
+import { formatDate } from "../../utils";
 
 const SearchInputsWrapper = styled.div`
   display: flex;
@@ -28,7 +31,9 @@ const SearchInputsWrapper = styled.div`
   background-color: #fff;
   border-radius: 8px;
   margin: ${(props) => (props.page === "home" ? "0 0 16px" : "0")};
-
+  @media (min-width: 800px) {
+    flex-direction: row;
+  }
   .location-inputs {
     display: flex;
     align-items: center;
@@ -61,6 +66,9 @@ const SearchInputsWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    @media (min-width: 800px) {
+      bottom: 0;
+    }
   }
 
   & > a:hover {
@@ -227,9 +235,7 @@ export const FlightSearchInputs = ({ page }) => {
   const [locationsInputSelected, setLocationsInputSelected] = useState("");
   const dispatch = useDispatch();
   const [params] = useSearchParams();
-  const { airportSearchQuery, currency } = useSelector(
-    (state) => state.flightSearch
-  );
+  const { currency } = useSelector((state) => state.flightSearch);
   const { tripType, cabinClass } = useSelector(
     (state) => state.flightSearch.filterBar
   );
@@ -238,14 +244,12 @@ export const FlightSearchInputs = ({ page }) => {
     destinationSkyId,
     originEntityId,
     destinationEntityId,
-    depDate,
-    turnDate,
+    departureDate,
+    returnDate,
   } = useSelector((state) => state.flightSearch.searchDetail);
 
   const { origin, destination } = useSelector((state) => state.flightSearch);
   // console.log("origin: ", origin);
-  const [departureDate, setDepartureDate] = useState(new Date());
-  const [returnDate, setReturnDate] = useState(new Date());
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [originResults, setOriginResults] = useState([]);
   const [destinationResults, setDestinationResults] = useState([]);
@@ -285,11 +289,12 @@ export const FlightSearchInputs = ({ page }) => {
             if (cityName !== undefined) {
               dispatch(setOrigin(cityName));
             }
-            getLocationByIP();
+            console.log("boolean: ", cityName !== undefined);
+            getLocationByIP(cityName !== undefined);
           } catch (error) {
             console.error("Error getting location:", error);
             // Fallback to IP-based location
-            getLocationByIP();
+            getLocationByIP(false);
           } finally {
             setIsLoadingLocation(false);
           }
@@ -297,21 +302,22 @@ export const FlightSearchInputs = ({ page }) => {
         (error) => {
           console.error("Error getting geolocation:", error);
           // Fallback to IP-based location
-          getLocationByIP();
+          getLocationByIP(false);
         }
       );
     } else {
-      getLocationByIP();
+      getLocationByIP(false);
     }
   };
 
-  const getLocationByIP = async () => {
+  const getLocationByIP = async (isOriginSet) => {
     try {
       const response = await fetch("https://api.db-ip.com/v2/free/self");
       const data = await response.json();
       if (data.stateProv !== undefined) {
-        dispatch(setOrigin(data.stateProv));
-        // Fetch currency based on country name
+        if (!isOriginSet) {
+          dispatch(setOrigin(data.stateProv));
+        }
         const currencyResponse = await fetch(
           `https://restcountries.com/v3.1/name/${data.countryName}`
         );
@@ -329,6 +335,18 @@ export const FlightSearchInputs = ({ page }) => {
   useEffect(() => {
     if (params.get("originSkyId") === null) {
       getUserLocation();
+    }
+    if (params.get("originSkyId")) {
+      dispatch(setOriginSkyId(params.get("originSkyId")));
+    }
+    if (params.get("destinationSkyId")) {
+      dispatch(setDestinationSkyId(params.get("destinationSkyId")));
+    }
+    if (params.get("origin")) {
+      dispatch(setOrigin(params.get("origin")));
+    }
+    if (params.get("destination")) {
+      dispatch(setDestination(params.get("destination")));
     }
   }, []);
 
@@ -386,15 +404,18 @@ export const FlightSearchInputs = ({ page }) => {
                 }
               }, 10);
             }}
+            disabled={page === "search"}
           />
           {locationsInputSelected === "origin" && originResults.length > 0 && (
             <AirportsSearchBox type="origin" results={originResults} />
           )}
           {originSkyId !== "" && <span>{originSkyId}</span>}
         </TextFieldWrapper>
-        <StyledSwapButton size="small" onClick={handleSwap}>
-          <SwapHorizIcon />
-        </StyledSwapButton>
+        {page === "home" && (
+          <StyledSwapButton size="small" onClick={handleSwap}>
+            <SwapHorizIcon />
+          </StyledSwapButton>
+        )}
         <TextFieldWrapper>
           <StyledTextField
             variant="standard"
@@ -410,6 +431,7 @@ export const FlightSearchInputs = ({ page }) => {
                 }
               }, 10);
             }}
+            disabled={page === "search"}
           />
           {locationsInputSelected === "destination" &&
             destinationResults.length > 0 && (
@@ -425,13 +447,14 @@ export const FlightSearchInputs = ({ page }) => {
         <DateInputsWrapper>
           <div className="date-input">
             <DatePicker
-              selected={departureDate}
+              selected={new Date(departureDate)}
               onChange={(date) => {
-                setDepartureDate(date);
-                if (date > returnDate) {
-                  setReturnDate(date);
+                dispatch(setDepartureDate(formatDate(date)));
+                if (new Date(date) > new Date(returnDate)) {
+                  dispatch(setReturnDate(formatDate(date)));
                 }
               }}
+              disabled={page === "search"}
               dateFormat="EEE d MMM"
               placeholderText="Departure"
               minDate={new Date()}
@@ -441,11 +464,12 @@ export const FlightSearchInputs = ({ page }) => {
           {tripType === "round_trip" && (
             <div className="date-input">
               <DatePicker
-                selected={returnDate}
-                onChange={(date) => setReturnDate(date)}
+                selected={new Date(returnDate)}
+                onChange={(date) => dispatch(setReturnDate(formatDate(date)))}
                 dateFormat="EEE d MMM"
                 placeholderText="Return"
-                minDate={departureDate}
+                minDate={new Date(departureDate)}
+                disabled={page === "search"}
               />
             </div>
           )}
@@ -462,7 +486,7 @@ export const FlightSearchInputs = ({ page }) => {
               departureDate === "") &&
             "disabled"
           }
-          to={`/search?originSkyId=${originSkyId}&destinationSkyId=${destinationSkyId}&originEntityId=${originEntityId}&destinationEntityId=${destinationEntityId}&date=${depDate}&returnDate=${turnDate}&cabinClass=${cabinClass}&currency=${currency}`}
+          to={`/search?origin=${origin}&destination=${destination}&originSkyId=${originSkyId}&destinationSkyId=${destinationSkyId}&originEntityId=${originEntityId}&destinationEntityId=${destinationEntityId}&date=${departureDate}&returnDate=${returnDate}&cabinClass=${cabinClass}&currency=${currency}`}
         >
           <SearchIcon
             sx={{

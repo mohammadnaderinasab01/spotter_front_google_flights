@@ -18,6 +18,7 @@ const DropdownWrapper = styled.div`
   & {
     width: 100%;
     overflow: hidden;
+    margin-top: 10px;
   }
   & > div {
     max-width: fit-content;

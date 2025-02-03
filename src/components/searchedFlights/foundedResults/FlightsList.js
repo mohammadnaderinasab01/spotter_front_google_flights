@@ -28,6 +28,9 @@ const FlightsListContainer = styled.div`
   & > div > div > div {
     width: 100%;
   }
+  & > h3 {
+    align-self: center;
+  }
 `;
 
 const FlightItem = styled.div`
@@ -200,6 +203,9 @@ const FlightsList = ({ flights, headingTitle }) => {
           </FlightItem>
         ))}
       </List>
+      {(flights?.itineraries.length === 0 || !flights?.itineraries) && (
+        <h3>No Data Found</h3>
+      )}
     </FlightsListContainer>
   );
 };

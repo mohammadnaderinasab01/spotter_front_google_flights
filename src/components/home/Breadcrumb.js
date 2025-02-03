@@ -3,7 +3,12 @@ import styled from "styled-components";
 const BreadcrumbWrapper = styled.div`
   margin: 16px;
   padding: 16px;
-
+  @media (min-width: 800px) {
+    max-width: 720px;
+    display: flex;
+    align-items: flex-start;
+    margin: 16px auto 0;
+  }
   .roadmap-link {
     display: flex;
     align-items: center;

@@ -60,7 +60,7 @@ const Container = styled.div`
 
 const Button = styled.button`
   width: 50%;
-  max-width: 368px;
+  max-width: 350px;
   height: 80px;
   display: flex;
   flex-direction: column;

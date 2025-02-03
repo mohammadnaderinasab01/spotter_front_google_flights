@@ -2,9 +2,14 @@ import React from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
+  width: 100%;
   padding: 16px;
   h3 {
     margin-bottom: 20px;
+  }
+  @media (min-width: 800px) {
+    max-width: 720px;
+    margin: 0 auto;
   }
 `;
 

@@ -48,6 +48,7 @@ export default function Dropdown({ values, icon, value, onChange }) {
             value={value}
             onChange={handleChange}
             style={{ padding: icon !== undefined && "0 0 0 25px" }}
+            disabled
           >
             {values.map((value) => (
               <MenuItem key={value.key} value={value.val}>

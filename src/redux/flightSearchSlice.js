@@ -22,8 +22,8 @@ const initialState = {
     destinationSkyId: "",
     originEntityId: "",
     destinationEntityId: "",
-    depDate: formatDate(new Date()),
-    turnDate: formatDate(new Date()),
+    departureDate: formatDate(new Date()),
+    returnDate: formatDate(new Date()),
     sortBy: "best",
   },
   topFlightsActiveButton: "best",
@@ -68,11 +68,11 @@ export const flightSearchSlice = createSlice({
       console.log("setDestinationEntityId: ", action.payload);
       state.searchDetail.destinationEntityId = action.payload;
     },
-    setDepDate: (state, action) => {
-      state.searchDetail.depDate = action.payload;
+    setDepartureDate: (state, action) => {
+      state.searchDetail.departureDate = action.payload;
     },
-    setTurnDate: (state, action) => {
-      state.searchDetail.turnDate = action.payload;
+    setReturnDate: (state, action) => {
+      state.searchDetail.returnDate = action.payload;
     },
     setSortBy: (state, action) => {
       state.searchDetail.sortBy = action.payload;
@@ -97,7 +97,8 @@ export const {
   setDestinationSkyId,
   setOriginEntityId,
   setDestinationEntityId,
-  setDate,
+  setDepartureDate,
+  setReturnDate,
   setSortBy,
   setAirportSearchQuery,
   setTopFlightsActiveButton,

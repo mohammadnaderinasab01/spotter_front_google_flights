@@ -6,14 +6,28 @@ import FlightsList from "./FlightsList";
 import { fetchFlights } from "../../../services/APIs";
 import { useSearchParams } from "react-router";
 import CircularProgress from "@mui/material/CircularProgress";
-import { formatMoney } from "../../../utils";
+import { formatMoney, formatDate } from "../../../utils";
 
 const FoundedResultsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  margin: 0 auto;
   & .loading-container {
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: center;
+  }
+  & > button {
+    width: calc(100% - 32px);
+    height: 40px;
+    margin-bottom: 16px;
+    background-color: #fff;
+    outline: none;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    align-self: center;
   }
 `;
 
@@ -23,6 +37,8 @@ const FoundedResults = () => {
   const [topFlights, setTopFlights] = useState();
   const [cheapestFlights, setCheapestFlights] = useState();
   const [otherFlights, setOtherFlights] = useState();
+  const [moreFlights, setMoreFlights] = useState();
+  const [isMoreFlightsShow, setIsMoreFlightsShow] = useState(false);
   const [topFlightsLoading, setTopFlightsLoading] = useState(false);
   const [topFlightsError, setTopFlightsError] = useState(null);
   const [otherFlightsLoading, setOtherFlightsLoading] = useState(false);
@@ -37,18 +53,38 @@ const FoundedResults = () => {
   );
 
   const fetchData = async (topFlightsActiveButton, limit) => {
-    if (topFlightsActiveButton === "other") {
+    if (
+      topFlightsActiveButton === "other" ||
+      topFlightsActiveButton === "more"
+    ) {
       setOtherFlightsLoading(true);
     } else {
       setTopFlightsLoading(true);
     }
     try {
+      let date = params.get("date");
+      if (date || date !== "") {
+        try {
+          date = formatDate(params.get("date"));
+        } catch {
+          date = formatDate(new Date());
+        }
+      }
+      let returnDate = params.get("returnDate");
+      if (returnDate || returnDate !== "") {
+        try {
+          returnDate = formatDate(params.get("returnDate"));
+        } catch {
+          returnDate = null;
+        }
+      }
       const data = await fetchFlights(
         params.get("originSkyId"),
         params.get("destinationSkyId"),
         params.get("originEntityId"),
         params.get("destinationEntityId"),
-        params.get("date"),
+        date,
+        returnDate,
         params.get("cabinClass"),
         params.get("adults"),
         topFlightsActiveButton === "best"
@@ -66,9 +102,14 @@ const FoundedResults = () => {
         setCheapestFlights(data.data);
       } else if (topFlightsActiveButton === "other") {
         setOtherFlights(data.data);
+      } else if (topFlightsActiveButton === "more") {
+        setMoreFlights(data.data);
       }
     } catch (err) {
-      if (topFlightsActiveButton === "other") {
+      if (
+        topFlightsActiveButton === "other" ||
+        topFlightsActiveButton === "more"
+      ) {
         setOtherFlightsError(err.message);
       } else {
         setTopFlightsError(err.message);
@@ -133,8 +174,26 @@ const FoundedResults = () => {
         <div>Error fetching flights: {otherFlightsError}</div>
       )}
       {!otherFlightsLoading && !otherFlightsError && (
-        <FlightsList headingTitle={"Other Flights"} flights={otherFlights} />
+        <FlightsList
+          headingTitle={"Other Flights"}
+          flights={isMoreFlightsShow ? moreFlights : otherFlights}
+        />
       )}
+      {!otherFlightsLoading &&
+        !otherFlightsError &&
+        !(
+          moreFlights?.itineraries?.length === 0 &&
+          otherFlights?.itineraries?.length === 0
+        ) && (
+          <button
+            onClick={() => {
+              setIsMoreFlightsShow(!isMoreFlightsShow);
+              fetchData("more", 100);
+            }}
+          >
+            View {isMoreFlightsShow ? "Less" : "More"} Flights
+          </button>
+        )}
     </FoundedResultsWrapper>
   );
 };
